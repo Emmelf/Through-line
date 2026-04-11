@@ -12,12 +12,20 @@ export default function Home() {
                     </nav>
                     <header className="container px-4 lg:flex mt-10 items-center h-full lg:mt-0">
                         <div className="w-full">
-                            <h1 className="text-4xl lg:text-6xl font-bold">Landing page for testing <span
-                                className="text-violet-950"><a className="underline" target="_blank" href="https://tailwindcss.com">tailwindcss</a></span></h1>
+                            <h1 className="text-4xl lg:text-6xl font-bold">Landing page of <span className="text-violet-950">
+                                Through-line
+                            </span>
+                            </h1>
                             <div className="w-20 h-2 bg-violet-950 my-4"></div>
-                            <Link to="/login">
-                                <button className="bg-purple-950 text-white text-2xl font-medium px-4 py-2 rounded shadow">Login</button>
-                            </Link>
+                            <div className="flex gap-4 mt-6">
+                                <Link to="/login">
+                                    <button className="bg-purple-950 text-white text-2xl font-medium px-4 py-2 rounded shadow">Login</button>
+                                </Link>
+
+                                <Link to="/register">
+                                    <button className="bg-purple-950 text-white text-2xl font-medium px-4 py-2 rounded shadow">Register</button>
+                                </Link>
+                            </div>
                         </div>
                     </header>
                 </div>
