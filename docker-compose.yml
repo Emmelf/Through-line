@@ -1,0 +1,47 @@
+services:
+  php:
+    build: ./api
+    container_name: symfony_php
+    volumes:
+      - ./api:/var/www/html
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  node:
+    build: ./web-app
+    container_name: react_node
+    volumes:
+      - ./web-app:/web-app
+      - /web-app/node_modules
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge
