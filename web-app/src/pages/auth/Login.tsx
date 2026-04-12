@@ -1,4 +1,4 @@
-import { LoginForm } from "@/components/login-form.tsx"
+import { LoginForm } from "@/components/auth/login-form.tsx"
 export default function Login() {
     return (
         <div className="flex w-full items-center justify-center p-6 md:p-10">

@@ -1,4 +1,4 @@
-import {ForgotPasswordForm} from "@/components/forgot-password-form.tsx";
+import {ForgotPasswordForm} from "@/components/auth/forgot-password-form.tsx";
 
 export default function ForgotPassword() {
     return (

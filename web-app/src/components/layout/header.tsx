@@ -3,7 +3,7 @@ import {
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu.tsx"
 import {Link} from "react-router-dom";
 import {Button} from "@/components/ui/button.tsx";
 
@@ -13,7 +13,7 @@ export function Header() {
             <div className="flex h-14 items-center gap-30 px-4">
 
                 <Link to="/" className="flex items-center gap-2 font-semibold">
-                    <img src="public/emmelfpfp.svg" alt="logo" className="h-5 w-5" />
+                    <img src="../../../public/emmelfpfp.svg" alt="logo" className="h-5 w-5" />
                     <span>Through-line.</span>
                 </Link>
 

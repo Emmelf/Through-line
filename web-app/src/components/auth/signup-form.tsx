@@ -1,18 +1,18 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button.tsx"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card.tsx"
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field.tsx"
+import { Input } from "@/components/ui/input.tsx"
 import {Link} from "react-router-dom";
 import {cn} from "@/lib/utils.ts";
 

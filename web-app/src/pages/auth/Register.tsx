@@ -1,4 +1,4 @@
-import { SignupForm } from "@/components/signup-form.tsx"
+import { SignupForm } from "@/components/auth/signup-form.tsx"
 export default function Register() {
     return (
         <div className="flex w-full items-center justify-center p-6 md:p-10">
