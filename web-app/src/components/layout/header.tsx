@@ -10,14 +10,14 @@ import {Button} from "@/components/ui/button.tsx";
 export function Header() {
     return (
         <header className="w-full border-b bg-background">
-            <div className="flex h-14 items-center gap-30 px-4">
+            <div className="flex h-14 items-center md:gap-15 px-4">
 
                 <Link to="/" className="flex items-center gap-2 font-semibold">
                     <img src="../../../public/emmelfpfp.svg" alt="logo" className="h-5 w-5" />
                     <span>Through-line.</span>
                 </Link>
 
-                <NavigationMenu>
+                <NavigationMenu className="hidden md:block">
                     <NavigationMenuList className="flex gap-6">
 
                         <NavigationMenuItem>
