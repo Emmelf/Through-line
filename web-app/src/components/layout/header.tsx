@@ -13,7 +13,7 @@ export function Header() {
             <div className="flex h-14 items-center md:gap-15 px-4">
 
                 <Link to="/" className="flex items-center gap-2 font-semibold">
-                    <img src="../../../public/emmelfpfp.svg" alt="logo" className="h-5 w-5" />
+                    <img src="/emmelfpfp.svg" alt="logo" className="h-5 w-5" />
                     <span>Through-line.</span>
                 </Link>
 

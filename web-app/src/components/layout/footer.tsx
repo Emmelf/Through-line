@@ -10,7 +10,7 @@ export function Footer() {
 
                     <div className='flex items-center gap-3'>
                         <Link to="/" className="flex items-center gap-2 font-semibold">
-                            <img src="../../../public/emmelfpfp.svg" alt="logo" className="h-5 w-5" />
+                            <img src="/emmelfpfp.svg" alt="logo" className="h-5 w-5" />
                             <span>Through-line.</span>
                         </Link>
                     </div>
