@@ -41,13 +41,25 @@ Edit both files and add the required values for your environment.
    docker compose up -d
    ```
 
-2. Run database migrations:
+2. Install backend dependencies:
+
+   ```bash
+   docker exec -it symfony_php composer install
+   ```
+
+3. Install frontend dependencies:
+
+   ```bash
+   docker exec -it react_node npm install
+   ```
+
+4. Run database migrations:
 
    ```bash
    docker exec -it symfony_php php bin/console doctrine:migrations:migrate
    ```
 
-3. Access the application:
+5. Access the application:
 
    * API: http://localhost:8000
    * Frontend: http://localhost:5173
