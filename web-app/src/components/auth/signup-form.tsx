@@ -20,10 +20,12 @@ import { isAxiosError } from "axios";
 import axios from "@/lib/axios";
 import {Alert, AlertTitle} from "@/components/ui/alert";
 import {AlertCircleIcon} from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<typeof Card>) {
 
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
@@ -49,15 +51,17 @@ export function SignupForm({ className, ...props }: React.ComponentProps<typeof 
 
     try {
       setLoading(true);
-      await axios.post(`/api/register`, {
+      const response = await axios.post(`/api/register`, {
         username,
         email,
         password,
       });
-      navigate("/login");
+      // Auto-login after registration
+      setUser(response.data.user);
+      navigate("/");
     } catch (err: unknown) {
       if (isAxiosError(err)) {
-        setError(err.response?.data?.message || "Registration failed");
+        setError(err.response?.data?.message || err.response?.data?.error || "Registration failed");
       } else {
         setError("An error occurred during registration");
       }

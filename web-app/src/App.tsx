@@ -4,7 +4,15 @@ import Login from "@/pages/auth/Login.tsx";
 import Register from "@/pages/auth/Register.tsx";
 import ForgotPassword from "@/pages/auth/ForgotPassword.tsx";
 import MainLayout from "@/layouts/MainLayout.tsx";
-function App() {
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { LoadingScreen } from "@/components/ui/loading-screen";
+
+function AppRoutes() {
+    const { loading } = useAuth();
+
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <Routes>
@@ -15,6 +23,14 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword/>} />
             </Route>
         </Routes>
+    );
+}
+
+function App() {
+    return (
+        <AuthProvider>
+            <AppRoutes />
+        </AuthProvider>
     )
 }
 

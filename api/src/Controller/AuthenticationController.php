@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+
+class AuthenticationController extends AbstractController
+{
+    #[Route('/api/login', name: 'api_login', methods: ['POST'])]
+    public function login(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $entityManager,
+        JWTTokenManagerInterface $jwtManager
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['email']) || !isset($data['password'])) {
+            return new JsonResponse(['error' => 'Email and password are required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+
+        if (!$user || !$passwordHasher->isPasswordValid($user, $data['password'])) {
+            return new JsonResponse(['error' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Generate JWT token
+        $token = $jwtManager->create($user);
+
+        $response = new JsonResponse([
+            'message' => 'Login successful',
+            'token' => $token,
+            'user' => [
+                'id' => $user->getId(),
+                'email' => $user->getEmail(),
+                'username' => $user->getUsername(),
+                'roles' => $user->getRoles()
+            ]
+        ], Response::HTTP_OK);
+
+        // Set token in httpOnly cookie
+        $cookie = Cookie::create('BEARER')
+            ->withValue($token)
+            ->withExpires(time() + 3600) // 1 hour
+            ->withHttpOnly(true)
+            ->withPath('/')
+            ->withSecure(false) // Set to false for localhost development
+            ->withSameSite(Cookie::SAMESITE_LAX);
+
+        $response->headers->setCookie($cookie);
+
+        return $response;
+    }
+
+    #[Route('/api/logout', name: 'api_logout', methods: ['POST'])]
+    public function logout(): JsonResponse
+    {
+        $response = new JsonResponse(['message' => 'Logout successful'], Response::HTTP_OK);
+
+        // Clear the JWT token cookie
+        $cookie = Cookie::create('BEARER')
+            ->withValue('')
+            ->withExpires(0)
+            ->withHttpOnly(true)
+            ->withPath('/')
+            ->withSecure(false)
+            ->withSameSite(Cookie::SAMESITE_LAX);
+
+        $response->headers->setCookie($cookie);
+
+        return $response;
+    }
+
+    #[Route('/api/me', name: 'api_me', methods: ['GET'])]
+    public function me(#[CurrentUser] ?UserInterface $user): JsonResponse
+    {
+        if (!$user) {
+            return new JsonResponse(['error' => 'Not authenticated'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if (!$user instanceof User) {
+            return new JsonResponse(['error' => 'Invalid user'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JsonResponse([
+            'user' => [
+                'id' => $user->getId(),
+                'email' => $user->getEmail(),
+                'username' => $user->getUsername(),
+                'roles' => $user->getRoles()
+            ]
+        ], Response::HTTP_OK);
+    }
+}

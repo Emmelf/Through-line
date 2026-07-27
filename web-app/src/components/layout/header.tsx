@@ -4,10 +4,19 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
 } from "@/components/ui/navigation-menu.tsx"
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Button} from "@/components/ui/button.tsx";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Header() {
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();
+
+    const handleLogout = async () => {
+        await logout();
+        navigate("/");
+    };
+
     return (
         <header className="w-full border-b bg-background">
             <div className="flex h-14 items-center md:gap-15 px-4">
@@ -56,15 +65,26 @@ export function Header() {
                 </NavigationMenu>
 
                 <div className="ml-auto flex items-center gap-2">
+                    {user ? (
+                        <>
+                            <span className="text-sm font-medium text-gray-700">
+                                {user.username}
+                            </span>
+                            <Button variant="destructive" onClick={handleLogout}>
+                                Logout
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/login">
+                                <Button variant="outline">Login</Button>
+                            </Link>
 
-                    <Link to="/login">
-                        <Button variant="outline">Login</Button>
-                    </Link>
-
-                    <Link to="/register">
-                        <Button>Register</Button>
-                    </Link>
-
+                            <Link to="/register">
+                                <Button>Register</Button>
+                            </Link>
+                        </>
+                    )}
                 </div>
 
             </div>
