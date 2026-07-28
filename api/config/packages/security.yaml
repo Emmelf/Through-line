@@ -16,6 +16,10 @@ security:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+        auth:
+            # Public auth routes - no JWT required
+            pattern: ^/api/(auth|login|register)
+            security: false
         main:
             lazy: true
             provider: app_user_provider
@@ -23,6 +27,10 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
+        - { path: ^/api/auth/google, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/logout, roles: ROLE_USER }
         - { path: ^/api/me, roles: ROLE_USER }
 
 when@test:

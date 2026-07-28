@@ -70,6 +70,11 @@ export function SignupForm({ className, ...props }: React.ComponentProps<typeof 
     }
   }
 
+  const handleGoogleSignup = () => {
+    setLoading(true);
+    globalThis.location.href = "http://localhost:8000/api/auth/google";
+  }
+
   return (
       <div className={cn("flex flex-col gap-6", className)} {...props}>
         <Card>
@@ -145,7 +150,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<typeof 
                   <Button type="submit" disabled={loading}>
                     {loading ? "Creating Account..." : "Create Account"}
                   </Button>
-                  <Button variant="outline" type="button" disabled={loading}>
+                  <Button variant="outline" type="button" disabled={loading} onClick={handleGoogleSignup}>
                     Sign up with Google
                   </Button>
                   <FieldDescription className="px-6 text-center">

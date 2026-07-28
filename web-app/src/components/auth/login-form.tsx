@@ -62,6 +62,11 @@ export function LoginForm({
     }
   }
 
+  const handleGoogleLogin = () => {
+    setLoading(true);
+    globalThis.location.href = "http://localhost:8000/api/auth/google";
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -110,7 +115,7 @@ export function LoginForm({
                 <Button type="submit" disabled={loading}>
                   {loading ? "Logging in..." : "Login"}
                 </Button>
-                <Button variant="outline" type="button" disabled={loading}>
+                <Button variant="outline" type="button" disabled={loading} onClick={handleGoogleLogin}>
                   Login with Google
                 </Button>
                 <FieldDescription className="text-center">
