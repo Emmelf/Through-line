@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Exception\GoogleOAuthException;
 use App\Service\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -186,7 +187,7 @@ class AuthenticationController extends AbstractController
             $response->headers->setCookie($cookie);
 
             return $response;
-        } catch (\Exception $e) {
+        } catch (GoogleOAuthException $e) {
             return new RedirectResponse('http://localhost:5173/login?error=auth_failed');
         }
     }

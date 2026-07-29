@@ -30,8 +30,13 @@ Before running the application, configure the environment variables:
    ```bash
    cp api/.env.local.example api/.env.local
    ```
+3. **Symfony test environment variables**
 
-Edit both files and add the required values for your environment.
+   ```bash
+   cp api/.env.test.example api/.env.test
+   ```
+
+Edit files and add the required values for your environment.
 
 ### Running the Application
 
