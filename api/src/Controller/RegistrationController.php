@@ -26,7 +26,7 @@ class RegistrationController extends AbstractController
 
         // Check if required fields are present
         if (!isset($data['email']) || !isset($data['password']) || !isset($data['username'])) {
-            return new JsonResponse(['error' => 'Email, password and username are required'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Email, password and username are required'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $email = $data['email'];
@@ -61,7 +61,7 @@ class RegistrationController extends AbstractController
             foreach ($errors as $error) {
                 $errorMessages[] = $error->getMessage();
             }
-            return new JsonResponse(['errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['errors' => $errorMessages], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Save to database

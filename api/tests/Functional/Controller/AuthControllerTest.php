@@ -99,7 +99,7 @@ class AuthControllerTest extends WebTestCase
         $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'], $payload);
 
         $response = $client->getResponse();
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(422, $response->getStatusCode());
 
         $data = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('error', $data);

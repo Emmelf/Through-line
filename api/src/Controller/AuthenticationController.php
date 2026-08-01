@@ -20,6 +20,12 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 class AuthenticationController extends AbstractController
 {
+    public function __construct(
+        private readonly string $frontendUrl,
+        private readonly bool $cookieSecure
+    ) {
+    }
+
     #[Route('/api/login', name: 'api_login', methods: ['POST'])]
     public function login(
         Request $request,
@@ -59,7 +65,7 @@ class AuthenticationController extends AbstractController
             ->withExpires(time() + 3600) // 1 hour
             ->withHttpOnly(true)
             ->withPath('/')
-            ->withSecure(false) // Set to false for localhost development
+            ->withSecure($this->cookieSecure)
             ->withSameSite(Cookie::SAMESITE_LAX);
 
         $response->headers->setCookie($cookie);
@@ -78,7 +84,7 @@ class AuthenticationController extends AbstractController
             ->withExpires(0)
             ->withHttpOnly(true)
             ->withPath('/')
-            ->withSecure(false)
+            ->withSecure($this->cookieSecure)
             ->withSameSite(Cookie::SAMESITE_LAX);
 
         $response->headers->setCookie($cookie);
@@ -138,7 +144,7 @@ class AuthenticationController extends AbstractController
         $session->remove('oauth_state');
 
         if (!$code || !$state || !$expectedState || $state !== $expectedState) {
-            return new RedirectResponse('http://localhost:5173/login?error=invalid_state');
+            return new RedirectResponse(sprintf('%s/login?error=invalid_state', $this->frontendUrl));
         }
 
         try {
@@ -173,7 +179,7 @@ class AuthenticationController extends AbstractController
             $token = $jwtManager->create($user);
 
             // Create response with redirect and cookie
-            $response = new RedirectResponse('http://localhost:5173');
+            $response = new RedirectResponse($this->frontendUrl);
 
             // Set token in httpOnly cookie
             $cookie = Cookie::create('BEARER')
@@ -181,14 +187,14 @@ class AuthenticationController extends AbstractController
                 ->withExpires(time() + 3600) // 1 hour
                 ->withHttpOnly(true)
                 ->withPath('/')
-                ->withSecure(false) // Set to false for localhost development
+                ->withSecure($this->cookieSecure)
                 ->withSameSite(Cookie::SAMESITE_LAX);
 
             $response->headers->setCookie($cookie);
 
             return $response;
         } catch (GoogleOAuthException $e) {
-            return new RedirectResponse('http://localhost:5173/login?error=auth_failed');
+            return new RedirectResponse(sprintf('%s/login?error=auth_failed', $this->frontendUrl));
         }
     }
 }
