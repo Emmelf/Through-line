@@ -1,0 +1,65 @@
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: throughline_nginx
+    depends_on:
+      - php-fpm
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./web-app/dist:/usr/share/nginx/html:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  php-fpm:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.prod
+    container_name: throughline_php_fpm
+    environment:
+      APP_ENV: prod
+      APP_SECRET: ${APP_SECRET}
+      DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}?serverVersion=8.0"
+      JWT_SECRET_KEY: /var/www/api/config/jwt/private.pem
+      JWT_PUBLIC_KEY: /var/www/api/config/jwt/public.pem
+      JWT_PASSPHRASE: ${JWT_PASSPHRASE}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN}
+      FRONTEND_URL: ${FRONTEND_URL}
+      COOKIE_SECURE: "1"
+    volumes:
+      - jwt_keys:/var/www/api/config/jwt
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: throughline_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  jwt_keys:
+
+networks:
+  app-network:
+    driver: bridge
