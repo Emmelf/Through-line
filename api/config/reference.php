@@ -1364,6 +1364,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         framework?: FrameworkConfig,
  *         nelmio_cors?: NelmioCorsConfig,
  *         security?: SecurityConfig,
+ *         maker?: MakerConfig,
  *         doctrine?: DoctrineConfig,
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
