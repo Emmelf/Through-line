@@ -64,7 +64,10 @@ export function LoginForm({
 
   const handleGoogleLogin = () => {
     setLoading(true);
-    globalThis.location.href = "http://localhost:8000/api/auth/google";
+    const apiOrigin = import.meta.env.PROD
+        ? globalThis.location.origin
+        : (import.meta.env.VITE_API_URL || globalThis.location.origin);
+    globalThis.location.href = new URL("/api/auth/google", apiOrigin).toString();
   }
 
   return (
