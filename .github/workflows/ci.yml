@@ -54,10 +54,10 @@ jobs:
           cat > .env.test <<EOF
           KERNEL_CLASS='App\Kernel'
           APP_SECRET='test_secret_key_for_testing'
-          DATABASE_URL="mysql://through_line_user:ci_user_\${{ github.run_id }}_\${{ github.run_attempt }}@127.0.0.1:3306/through_line_test?serverVersion=8.0" # pragma: allowlist secret
+          DATABASE_URL="mysql://root:ci_root_${{ github.run_id }}_${{ github.run_attempt }}@127.0.0.1:3306/through_line_test?serverVersion=8.0"
           JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
           JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
-          JWT_PASSPHRASE=ci_jwt_\${{ github.run_id }}_\${{ github.run_attempt }} # pragma: allowlist secret
+          JWT_PASSPHRASE=ci_jwt_${{ github.run_id }}_${{ github.run_attempt }} # pragma: allowlist secret
           EOF
 
       - name: Wait for MySQL
