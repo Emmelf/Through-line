@@ -21,6 +21,7 @@ export default function Home() {
                     <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance">
                         Welcome to <span className="text-blue-900">Through-line.</span>
                     </h1>
+                    <h2 className="text-2xl font-extrabold tracking-tight text-balance">Test</h2>
                     {user && (
                         <p className="text-lg text-gray-600 mt-4">
                             <span className="font-semibold text-blue-900">{user.username} !</span>
