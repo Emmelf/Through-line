@@ -70,6 +70,9 @@ jobs:
       - name: Run database migrations
         run: php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
+      - name: Generate JWT keypair for tests
+        run: php bin/console lexik:jwt:generate-keypair --env=test --skip-if-exists
+
       - name: Run PHPUnit
         run: php bin/phpunit tests/Unit tests/Functional --log-junit var/phpunit-junit.xml --no-coverage
 
