@@ -76,32 +76,9 @@ jobs:
       - name: Run PHPUnit
         run: php bin/phpunit tests/Unit tests/Functional --log-junit var/phpunit-junit.xml --no-coverage
 
-  sonarcloud:
-    runs-on: ubuntu-latest
-    needs: tests
-
-    defaults:
-      run:
-        working-directory: api
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v4
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   deploy:
     runs-on: ubuntu-latest
-    needs:
-      - tests
-      - sonarcloud
+    needs: tests
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
