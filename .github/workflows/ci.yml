@@ -60,6 +60,13 @@ jobs:
           JWT_PASSPHRASE=ci_jwt_\${{ github.run_id }}_\${{ github.run_attempt }} # pragma: allowlist secret
           EOF
 
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h 127.0.0.1 -u through_line_user -p"ci_user_${{ github.run_id }}_${{ github.run_attempt }}" 2>/dev/null; do
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
       - name: Run database migrations
         run: php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
