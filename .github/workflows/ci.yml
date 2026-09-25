@@ -19,14 +19,14 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: ${{ env.CI_MYSQL_ROOT_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ci_root_${{ github.run_id }}_${{ github.run_attempt }}
           MYSQL_DATABASE: through_line_test
           MYSQL_USER: through_line_user
-          MYSQL_PASSWORD: ${{ env.CI_MYSQL_PASSWORD }}
+          MYSQL_PASSWORD: ci_user_${{ github.run_id }}_${{ github.run_attempt }}
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -p${{ env.CI_MYSQL_ROOT_PASSWORD }}"
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pci_root_${{ github.run_id }}_${{ github.run_attempt }}"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
@@ -54,10 +54,10 @@ jobs:
           cat > .env.test <<EOF
           KERNEL_CLASS='App\Kernel'
           APP_SECRET='test_secret_key_for_testing'
-          DATABASE_URL="mysql://through_line_user:${CI_MYSQL_PASSWORD}@127.0.0.1:3306/through_line_test?serverVersion=8.0"
+          DATABASE_URL="mysql://through_line_user:ci_user_\${{ github.run_id }}_\${{ github.run_attempt }}@127.0.0.1:3306/through_line_test?serverVersion=8.0" # pragma: allowlist secret
           JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
           JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
-          JWT_PASSPHRASE=${CI_JWT_PASSPHRASE}
+          JWT_PASSPHRASE=ci_jwt_\${{ github.run_id }}_\${{ github.run_attempt }} # pragma: allowlist secret
           EOF
 
       - name: Run database migrations
