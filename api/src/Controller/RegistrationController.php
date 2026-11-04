@@ -24,25 +24,14 @@ class RegistrationController extends AbstractController
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
-        // Check if required fields are present
-        if (!isset($data['email']) || !isset($data['password']) || !isset($data['username'])) {
-            return new JsonResponse(['error' => 'Email, password and username are required'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        $validationError = $this->findInputError($data, $entityManager);
+        if ($validationError !== null) {
+            return $validationError;
         }
 
         $email = $data['email'];
         $password = $data['password'];
         $username = $data['username'];
-
-        // Check if user already exists
-        $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-        if ($existingUser) {
-            return new JsonResponse(['error' => 'User with this email already exists'], Response::HTTP_CONFLICT);
-        }
-
-        $existingUsername = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
-        if ($existingUsername) {
-            return new JsonResponse(['error' => 'Username already taken'], Response::HTTP_CONFLICT);
-        }
 
         // Create new user
         $user = new User();
@@ -77,5 +66,27 @@ class RegistrationController extends AbstractController
                 'roles' => $user->getRoles()
             ]
         ], Response::HTTP_CREATED);
+    }
+
+    private function findInputError(mixed $data, EntityManagerInterface $entityManager): ?JsonResponse
+    {
+        if (!isset($data['email'], $data['password'], $data['username'])) {
+            return new JsonResponse(['error' => 'Email, password and username are required'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (!is_string($data['username']) || mb_strlen($data['username']) > 16) {
+            return new JsonResponse(['error' => 'Username must be at most 16 characters'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $repository = $entityManager->getRepository(User::class);
+        if ($repository->findOneBy(['email' => $data['email']])) {
+            return new JsonResponse(['error' => 'User with this email already exists'], Response::HTTP_CONFLICT);
+        }
+
+        if ($repository->findOneBy(['username' => $data['username']])) {
+            return new JsonResponse(['error' => 'Username already taken'], Response::HTTP_CONFLICT);
+        }
+
+        return null;
     }
 }
