@@ -141,6 +141,23 @@ jobs:
         working-directory: api
         run: composer install --no-interaction --prefer-dist --no-progress
 
+      - name: Create API environment file
+        working-directory: api
+        run: |
+          cat > .env.local <<EOF
+          APP_ENV=dev
+          APP_SECRET=e2e_app_secret_${{ github.run_id }}
+          DATABASE_URL="mysql://root@127.0.0.1:3306/through_line_e2e?serverVersion=8.0"
+          JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+          JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+          JWT_PASSPHRASE=${{ env.E2E_JWT_PASSPHRASE }}
+          CORS_ALLOW_ORIGIN=^http://localhost:5173$
+          FRONTEND_URL=http://localhost:5173
+          COOKIE_SECURE=0
+          GOOGLE_CLIENT_ID=unused
+          GOOGLE_CLIENT_SECRET=unused
+          GOOGLE_REDIRECT_URI=http://localhost:8000/api/auth/google/callback
+          EOF
       - name: Prepare backend (migrations + JWT keys)
         working-directory: api
         env:
