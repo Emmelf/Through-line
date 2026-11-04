@@ -105,6 +105,20 @@ class AuthControllerTest extends WebTestCase
         $this->assertArrayHasKey('error', $data);
     }
 
+    public function testRegistrationWithTooLongUsername(): void
+    {
+        $client = self::createClient();
+        $payload = json_encode([
+            'email' => 'longname@example.com',
+            'username' => str_repeat('a', 17),
+            'password' => 'Password123!',
+        ]);
+
+        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'], $payload);
+
+        $this->assertEquals(422, $client->getResponse()->getStatusCode());
+    }
+
     public function testLoginWithValidCredentials(): void
     {
         $client = self::createClient();
