@@ -1,4 +1,4 @@
-﻿import { defineConfig, devices } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 
 // E2E runs against the real Symfony API (http://localhost:8000) backed by MySQL.
 // Locally: start the stack first (docker compose up). In CI the job starts it.

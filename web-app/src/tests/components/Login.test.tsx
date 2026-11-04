@@ -46,6 +46,16 @@ describe("LoginForm", () => {
     expect(await screen.findByText("Email and password are required")).toBeInTheDocument();
   });
 
+  it("shows validation error for invalid email", async () => {
+    renderLogin();
+
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "not-an-email" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "password123" } });
+    fireEvent.submit(screen.getByRole("button", { name: "Login" }).closest("form")!);
+
+    expect(await screen.findByText("Please enter a valid email address")).toBeInTheDocument();
+  });
+
   it("shows API error for invalid credentials", async () => {
     server.use(
       http.post("http://localhost:8000/api/login", () =>

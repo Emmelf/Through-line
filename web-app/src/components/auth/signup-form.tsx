@@ -21,6 +21,7 @@ import axios from "@/lib/axios";
 import {Alert, AlertTitle} from "@/components/ui/alert";
 import {AlertCircleIcon} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { isValidEmail } from "@/lib/validation";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<typeof Card>) {
 
@@ -34,13 +35,18 @@ export function SignupForm({ className, ...props }: React.ComponentProps<typeof 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
     // Validation
     if (!username || !email || !password || !confirmPassword) {
       setError("All fields are required");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address");
       return;
     }
 

@@ -46,6 +46,18 @@ describe("SignupForm", () => {
     expect(await screen.findByText("All fields are required")).toBeInTheDocument();
   });
 
+  it("shows validation error for invalid email", async () => {
+    renderRegister();
+
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "not-an-email" } });
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "new-user" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "password123" } });
+    fireEvent.change(screen.getByLabelText("Confirm Password"), { target: { value: "password123" } });
+    fireEvent.submit(screen.getByRole("button", { name: "Create Account" }).closest("form")!);
+
+    expect(await screen.findByText("Please enter a valid email address")).toBeInTheDocument();
+  });
+
   it("shows API error when email already exists", async () => {
     server.use(
       http.post("http://localhost:8000/api/register", () =>

@@ -1,4 +1,4 @@
-﻿import { expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 const password = "Password123!";
 const uniqueUser = () => {
@@ -34,6 +34,18 @@ test.describe("Auth flow (real Symfony API + MySQL)", () => {
     await page.locator("form").evaluate((form) => form.setAttribute("novalidate", ""));
     await page.getByRole("button", { name: "Create Account" }).click();
     await expect(page.getByText("All fields are required")).toBeVisible();
+  });
+
+  test("shows validation error on invalid email", async ({ page }) => {
+    await page.goto("/register");
+    await page.locator("form").evaluate((form) => form.setAttribute("novalidate", ""));
+    await page.getByLabel("Email").fill("not-an-email");
+    await page.getByLabel("Username").fill("someone");
+    await page.getByLabel("Password", { exact: true }).fill(password);
+    await page.getByLabel("Confirm Password").fill(password);
+    await page.getByRole("button", { name: "Create Account" }).click();
+    await expect(page.getByText("Please enter a valid email address")).toBeVisible();
+    await expect(page).toHaveURL(/\/register$/);
   });
 
   test("registers a new user and lands on home", async ({ page }) => {

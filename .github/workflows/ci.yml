@@ -1,4 +1,4 @@
-﻿name: CI
+name: CI
 
 on:
   push:
@@ -201,12 +201,28 @@ jobs:
       - name: Show API log on failure
         if: failure()
         run: cat api-server.log || true
+  sonarcloud:
+    runs-on: ubuntu-latest
+    needs: [tests, frontend_tests]
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarCloud scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   deploy:
     runs-on: ubuntu-latest
     needs:
       - tests
       - frontend_tests
       - e2e_tests
+      - sonarcloud
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
