@@ -14,6 +14,8 @@ ENV APP_ENV=prod APP_DEBUG=0
 
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress \
+# Placeholder only used while building the image so cache warmup does not need a real database
+ARG BUILD_DATABASE_URL="mysql://build:build@127.0.0.1:3306/build?serverVersion=8.0&charset=utf8mb4"
+RUN DATABASE_URL="$BUILD_DATABASE_URL" composer install --no-dev --optimize-autoloader --no-interaction --no-progress \
  && mkdir -p var/cache var/log config/jwt \
  && chown -R www-data:www-data var config/jwt
