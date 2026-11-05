@@ -266,6 +266,7 @@ jobs:
           GOOGLE_REDIRECT_URI: "https://through-line.online/api/auth/google/callback"
           CORS_ALLOW_ORIGIN: "^https://(www\\.)?through-line\\.online$"
           FRONTEND_URL: "https://through-line.online"
+          MAILER_DSN: ${{ secrets.MAILER_DSN }}
         run: |
           {
             printf 'MYSQL_ROOT_PASSWORD=%s\n' "$MYSQL_PASSWORD"
@@ -279,6 +280,7 @@ jobs:
             printf 'GOOGLE_REDIRECT_URI=%s\n' "$GOOGLE_REDIRECT_URI"
             printf 'CORS_ALLOW_ORIGIN=%s\n' "$CORS_ALLOW_ORIGIN"
             printf 'FRONTEND_URL=%s\n' "$FRONTEND_URL"
+            printf 'MAILER_DSN=%s\n' "${MAILER_DSN:-null://null}"
           } > .env.prod
           ssh "$OVH_SSH_USER@$OVH_SSH_HOST" "set -e
           if [ ! -d /opt/Through-line/.git ]; then

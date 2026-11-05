@@ -39,6 +39,14 @@ services:
     networks:
       - app-network
 
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    ports:
+      - "8025:8025"
+    networks:
+      - app-network
+
 volumes:
   db_data:
 

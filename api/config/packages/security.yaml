@@ -18,7 +18,7 @@ security:
             security: false
         auth:
             # Public auth routes - no JWT required
-            pattern: ^/api/(auth|login|register)
+            pattern: ^/api/(auth|login|register|forgot-password|reset-password)
             security: false
         main:
             stateless: true
@@ -30,6 +30,7 @@ security:
         - { path: ^/api/auth/google, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/(forgot-password|reset-password), roles: PUBLIC_ACCESS }
         - { path: ^/api/logout, roles: ROLE_USER }
         - { path: ^/api/me, roles: ROLE_USER }
 

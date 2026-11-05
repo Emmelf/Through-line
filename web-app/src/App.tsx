@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Login from "@/pages/auth/Login.tsx";
 import Register from "@/pages/auth/Register.tsx";
 import ForgotPassword from "@/pages/auth/ForgotPassword.tsx";
+import ResetPassword from "@/pages/auth/ResetPassword.tsx";
 import MainLayout from "@/layouts/MainLayout.tsx";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LoadingScreen } from "@/components/ui/loading-screen";
@@ -32,6 +33,7 @@ function AppRoutes() {
                 <Route path="/login" element={<PublicOnly isAuthenticated={isAuthenticated}><Login/></PublicOnly>} />
                 <Route path="/register" element={<PublicOnly isAuthenticated={isAuthenticated}><Register/></PublicOnly>} />
                 <Route path="/forgot-password" element={<PublicOnly isAuthenticated={isAuthenticated}><ForgotPassword/></PublicOnly>} />
+                <Route path="/reset-password" element={<ResetPassword/>} />
             </Route>
         </Routes>
     );
