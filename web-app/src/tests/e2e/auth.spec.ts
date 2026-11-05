@@ -71,6 +71,22 @@ test.describe("Auth flow (real Symfony API + MySQL)", () => {
     await expect(page).toHaveURL(/\/login$/);
   });
 
+  test("forgot password shows the same confirmation for an unknown email", async ({ page }) => {
+    await page.goto("/forgot-password");
+    await page.getByLabel("Email").fill(`nobody_${Date.now()}@example.com`);
+    await page.getByRole("button", { name: "Send reset link" }).click();
+    await expect(
+      page.getByText("If an account exists for this email, a reset link has been sent.")
+    ).toBeVisible();
+  });
+
+  test("reset password with an invalid token shows an error", async ({ page }) => {
+    await page.goto("/reset-password?token=not-a-real-token");
+    await page.getByLabel("New password").fill(password);
+    await page.getByLabel("Confirm password").fill(password);
+    await page.getByRole("button", { name: "Reset password" }).click();
+    await expect(page.getByText("Invalid or expired token")).toBeVisible();
+  });
   test("login sets an httpOnly cookie, survives reload, and logout clears it", async ({ page, request, context }) => {
     const u = uniqueUser();
     const res = await request.post("http://localhost:8000/api/register", {

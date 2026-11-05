@@ -70,6 +70,7 @@ Edit files and add the required values for your environment.
 
     * API: http://localhost:8000
     * Frontend: http://localhost:5173
+    * Mailpit (dev inbox for password reset emails): http://localhost:8025 (set `MAILER_DSN=smtp://mailpit:1025` in `api/.env.local`)
 
 ## Production deployment (OVH VPS)
 
@@ -111,6 +112,7 @@ Edit files and add the required values for your environment.
 - `OVH_SSH_PRIVATE_KEY`
 - `GOOGLE_CLIENT_ID`
 - `GOOGLE_CLIENT_SECRET`
+- `MAILER_DSN` (optional SMTP DSN for password reset emails; without it, emails are dropped)
 - `JWT_SECRET` (used as `JWT_PASSPHRASE`)
 - `MYSQL_PASSWORD`
 - `APP_SECRET`
